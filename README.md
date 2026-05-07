@@ -1,6 +1,6 @@
 # Untis-To-Google-Calender
 
-A simple python script that transfers Untis agenda to Google Calender. Because im lazy i am only going to provide a guide for arch Linux ( I use Arch btw. ). If you have any questions ask claude.
+A simple python script that transfers Untis agenda to Google Calender. Because im lazy I am only going to provide a guide for Arch Linux ( I use Arch btw. ). If you have any questions ask Claude.
 
 # Features
 - **Personalized Sync:** Fetches your individual schedule, including specific student-only events.
@@ -10,7 +10,7 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
 # Setup
 
   1. Setup enviorement
-     - Make a Directory in which the script is going to run:
+     - Make a directory in which the script is going to run:
        mkdir Untis-To-Calender
      - Install all necesary packages:
        sudo pacman -S python3 python-pip
@@ -20,7 +20,12 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
        pip install webuntis python-dotenv google-auth-oauthlib google-api-python-client
 
   2. Get Code
-     - Download the main.py from this repository and move it to your working directory ( Untis-To-Calender )
+     - Download the main.py and the .env from this repository and move them to your working directory ( Untis-To-Calender )
+     - Open the .env file. There you will see 'SERVER','USERNAME','PASSWORD' and 'SCHOOL'. You will need to fill in your credentials as following:
+       SERVER='' (when you go on the WebUntis Webpage, after you selected your school, the URL in the top bar will change. you just copy that URL without any subdirectories or https:// (this could look like this: gym-neue-os.webuntis.com))
+       USERNAME='' (Your WebUntis login Username (For Examle: Freimann.Udo))
+       PASSWORD='' (Your WebUntis login Password)
+       SCHOOL='' (Usualy this is the same as SERVER but without .webuntis.com (For example: gym-neue-os))
     
   3. Get Google API Key ( hardest part, you may want to ask AI for this one )
      - Go to the [Google Cloud Console](https://console.cloud.google.com/).
@@ -38,8 +43,4 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
 
 # Usage
 
-You can transfer your current Week to Google Calender by going in the working directory and typing in 'python3 main.py'. Then you need to authenticate with your Google Account once and your done. If you want to change your Google Account just delete the token.json form the working directory and rerun the script.
-
-(https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-cd YOUR_REPO_NAME
-pip install -r requirements.txt
+You can transfer your current Week to Google Calender by going in the working directory and typing in 'python3 main.py'. Then you need to authenticate with your Google Account once and your done. From there on you can you can execute the script without reauthenticating every time. If you want to change your Google Account just delete the 'token.json' form the working directory and rerun the script.
