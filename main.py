@@ -8,16 +8,13 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-# Schreibrechte für den Kalender anfordern
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def get_calendar_service():
     creds = None
-    # Der Token speichert deine Anmeldung, damit das Fenster nicht jedes Mal kommt
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     
-    # Wenn kein gültiger Token da ist, öffne das Login-Fenster
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -25,7 +22,6 @@ def get_calendar_service():
             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
         
-        # Speichere den Token für das nächste Mal
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
@@ -70,7 +66,6 @@ with webuntis.Session(
         startTime = period.start.strftime('%H:%M')
         endTime = period.end.strftime('%H:%M')
 
-        #print(f"Fach: {subject}, Raum: {room}, start Zeit: {startTime}, end Zeit: {endTime}, Datum: {date}\n")
         newEvent = Event(
             name = subject,
             room = room,
@@ -80,10 +75,6 @@ with webuntis.Session(
         )
 
         allEvents.append(newEvent)
-
-
-    #for events in allEvents:
-    #print(f"{events.name}, {events.date}, {events.startTime}, {events.endTime}, {events.teacher}, {events.room}, {events.text}, {events.homework}")
 
 def add_event_to_google(service, event_obj):
     google_event = {
