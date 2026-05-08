@@ -28,15 +28,20 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
        - SCHOOL='' (Usualy this is the same as SERVER but without .webuntis.com (For example: gym-neue-os))
     
 3. **Get Google API Key** ( hardest part, you may want to ask AI for this one )
-     - Go to the [Google Cloud Console](https://console.cloud.google.com/).
-     - **Create a New Project** (e.g., "Untis-Sync").
+     - Go to the [Google API Console](https://console.cloud.google.com/apis/).
+     - On the Top click the Button **My First Project**, then click on **New Project**
+     - Type in your Project name ( e.g. Untis-To-Calender ), then hit **create**
+     - Next, click on **Enabled APIs & services** on the right, then click **Enable APIs and services** on the top
      - In the search bar, type **"Google Calendar API"** and click **Enable**.
      - Go to the **"OAuth consent screen"** tab:
-       - Choose **User Type: External**.
-       - Fill in the App name (e.g., "My Untis App") and your email.
-       - Click through to the end and **add your own email** as a "Test User" (Required!).
-     - Go to the **"Credentials"** tab:
-       - Click **Create Credentials** -> **OAuth client ID**.
+       - Click **Get started**
+       - Type in your **App name** ( e.g. Untis-to-Calender ) and the **User support email** ( Thiscan be the same as the Google Account you are currently using )
+       - Choose **Audiance: External**.
+       - Click through to the end
+       - Go back to the **Audiance** tab, scroll down to Test users and click **Add users**
+         - Now type in the E-Mail Adress of the Google Account you are going to be synchronising with
+     - Go to the **Clients** tab:
+       - Click **Create Client**
        - Select **Application type: Desktop App**.
        - Click **Create** and then **Download JSON**.
      - Rename the downloaded file to `credentials.json` and move it into your project folder.
