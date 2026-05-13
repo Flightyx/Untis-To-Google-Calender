@@ -21,7 +21,7 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
        - pip install webuntis python-dotenv google-auth-oauthlib google-api-python-client
 
 2. **Get Code**
-     - Download the main.py and the .env from this repository and move them to your working directory ( Untis-To-Calender )
+     - Download and unpack the .zip found in the newest release and move all the included files to your working directory ( Untis-To-Calender )
      - Open the .env file. There you will see 'SERVER','USERNAME','PASSWORD', 'SCHOOL', 'TIMEZONE' and 'EXPORTAS'. You will need to fill in your credentials as following:
        - SERVER='' (when you go on the WebUntis Webpage, after you selected your school, the URL in the top bar will change. you just copy that URL without any subdirectories or https:// (this could look like this: gym-neue-os.webuntis.com))
        - USERNAME='' (Your WebUntis login Username (For Examle: Freimann.Udo))
