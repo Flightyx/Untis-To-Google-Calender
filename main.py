@@ -1,4 +1,6 @@
-import requests  
+import requests 
+from icalendar import Event as iCalEvent
+from icalendar import Calendar
 from datetime import date, timedelta, datetime
 import pytz
 import os
@@ -135,7 +137,12 @@ def get_homework(session: requests.Session, headers: dict,
         headers=headers,
     )
     resp.raise_for_status()
-    return resp.json().get("data", {}).get("homeworks", [])
+
+    raw = resp.json().get("data", {})
+    lessons = {l["id"]: l for l in raw.get("lessons", [])}
+    homeworks = raw.get("homeworks", [])
+
+    return homeworks, lessons
 
 
 
@@ -211,13 +218,36 @@ def format_datetime(dt_str: str) -> str:
 
 
 
-def find_homework(homeworks, entry_date, subject_short):
+def find_homework(homeworks, lessons, subject_short):
     results = []
     for hw in homeworks:
-        due = str(hw.get("dueDate", ""))
-        if due >= entry_date.replace("-", ""):
+        lesson = lessons.get(hw.get("lessonId", -1), {})
+        if lesson.get("subject") == subject_short:
             results.append(hw.get("text", ""))
     return "\n".join(results) if results else ""
+
+
+
+today = date.today()
+thisWeekDate = f"{today - timedelta(days=today.weekday())}-{today - timedelta(days=today.weekday()) + timedelta(days=4)}"
+
+def export_ics(events: list, filename: str = f"timetable-{thisWeekDate}.ics"):
+    cal = Calendar()
+    cal.add('prodid', '-//WebUntis Export//DE')
+    cal.add('version', '2.0')
+
+    for ev in events:
+        ical_event = iCalEvent()
+        ical_event.add('summary', ev.name)
+        ical_event.add('location', ev.room)
+        ical_event.add('description', f"Lehrer: {ev.teacher}\n\nLehrstoff: {ev.text}\n\nHausaufgaben: {ev.homework}")
+        ical_event.add('dtstart', datetime.fromisoformat(ev.startTime))
+        ical_event.add('dtend', datetime.fromisoformat(ev.endTime))
+        cal.add_component(ical_event)
+
+    with open(filename, 'wb') as f:
+        f.write(cal.to_ical())
+    print(f"→ Exported .ics file as {filename}")
 
 
 
@@ -260,9 +290,7 @@ def main():
     # 2. JWT + Tenant-ID for internal API
     jwt       = get_jwt(session)
     tenant_id = get_tenant_id(session)
-    print(f"   JWT received, Tenant-ID: {tenant_id}")
-    print("")
-    print("")
+    print(f"   JWT received, Tenant-ID: {tenant_id}\n\n")
 
     headers = internal_headers(jwt, tenant_id)
 
@@ -281,16 +309,16 @@ def main():
 
    # 3. Homework
     try:
-        homeworks = get_homework(session, headers, monday, friday + timedelta(days=14))
+        homeworks, lessons = get_homework(session, headers, monday, friday + timedelta(days=14))
         if not homeworks:
             pass
         for hw in homeworks:
-            due  = str(hw.get("dueDate", "?"))
+            due  = str(hw.get("dueDate", "?")) #AUF DAUER WEG
             text = hw.get("text", "(kein Text)")
-            print(f"  Fetched Homework: Deadline: {due}  –  {text}")
+            print(f"  Fetched Homework: Deadline: {due} –  {text}")
     except Exception as ex:
-        print(f"  Error: {ex}")
-
+        print(f"  Error: {ex}\n\n")
+    print("\n\n")
 
 
 
@@ -324,6 +352,12 @@ def main():
                 for p in e.get("position3", [])
                 if isinstance(p, dict)
             )
+            fach_short = ", ".join(
+                p.get("current", p).get("shortName", "?")
+                for p in e.get("position2", [])
+                if isinstance(p, dict)
+            )
+
 
             flag = "CHANGED" if status == "CHANGED" else ""
             flag = "CANCELLED" if status == "CANCELLED" else flag
@@ -342,7 +376,7 @@ def main():
                 startTime = format_datetime(start),
                 endTime = format_datetime(end_t),
                 teacher = lehrer,
-                homework = find_homework(homeworks, e.get("_date", ""), fach), 
+                homework = "None :)" if find_homework(homeworks, lessons, fach_short) == "" else find_homework(homeworks, lessons, fach_short), 
                 color = colorCode,
             )
             allEvents.append(newEvent)
@@ -353,8 +387,7 @@ def main():
         print(f"  Error: {ex}")
 
 
-
-
+  
 
 
 
@@ -365,13 +398,17 @@ def main():
 
 
 
-
-    # 7. Put everything in Google Calender
-    service = get_calendar_service()
-    for ev in allEvents:
-        add_event_to_google(service, ev)
- 
-
+    # 7. Put everything in Google Calender or export it as an .ics
+    print("\n\n")
+    exportAs = os.getenv('EXPORTAS')
+    if exportAs == 'Google-Calendar':
+        service = get_calendar_service()
+        for ev in allEvents:
+            add_event_to_google(service, ev)
+    elif exportAs == '.ics':
+        export_ics(allEvents)
+    else:
+        print(f"\n Wrong specification of what you want the calender to be exported as.\n You used {exportAs} but the only choices are 'Google-Calender' or '.ics'\n")
 
 
 
