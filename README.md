@@ -6,6 +6,7 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
 - **Personalized Sync:** Fetches your individual schedule, including specific student-only events.
 - **Google OAuth2 Integration:** Securely authenticates via the official Google login prompt.
 - **Smart Data Extraction:** Maps subject names, rooms, and times directly to calendar fields.
+- **Export as .ics possible** You can, instead of exporting your WebUntis agenda to Google Calendar, export it as a .ics. This can be useful if you use another Calender than Google Calendar.
 
 # Setup
 
@@ -21,12 +22,13 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
 
 2. **Get Code**
      - Download the main.py and the .env from this repository and move them to your working directory ( Untis-To-Calender )
-     - Open the .env file. There you will see 'SERVER','USERNAME','PASSWORD', 'SCHOOL' and 'TIMEZONE'. You will need to fill in your credentials as following:
+     - Open the .env file. There you will see 'SERVER','USERNAME','PASSWORD', 'SCHOOL', 'TIMEZONE' and 'EXPORTAS'. You will need to fill in your credentials as following:
        - SERVER='' (when you go on the WebUntis Webpage, after you selected your school, the URL in the top bar will change. you just copy that URL without any subdirectories or https:// (this could look like this: gym-neue-os.webuntis.com))
        - USERNAME='' (Your WebUntis login Username (For Examle: Freimann.Udo))
        - PASSWORD='' (Your WebUntis login Password)
        - SCHOOL='' (Usualy this is the same as SERVER but without .webuntis.com (For example: gym-neue-os))
        - TIMEZONE='' (Your Timezone, for example Europe/Berlin)
+       - EXPORTAS='Google-Calendar' (Set to either 'Google-Calendar' if you want to export to google calendar or alternatively set it to '.ics' to export it as a .ics file.
     
 3. **Get Google API Key** ( hardest part, you may want to ask AI for this one )
      - Go to the [Google API Console](https://console.cloud.google.com/apis/).
