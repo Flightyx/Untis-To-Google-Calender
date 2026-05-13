@@ -6,7 +6,7 @@ A simple python script that transfers Untis agenda to Google Calender. Because i
 - **Personalized Sync:** Fetches your individual schedule, including specific student-only events.
 - **Google OAuth2 Integration:** Securely authenticates via the official Google login prompt.
 - **Smart Data Extraction:** Maps subject names, rooms, and times directly to calendar fields.
-- **Export as .ics possible** You can, instead of exporting your WebUntis agenda to Google Calendar, export it as a .ics. This can be useful if you use another Calender than Google Calendar.
+- **Export as .ics possible:** You can, instead of exporting your WebUntis agenda to Google Calendar, export it as a .ics. This can be useful if you use another Calender than Google Calendar.
 
 # Setup
 
